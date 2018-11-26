@@ -10,5 +10,6 @@ set ( PROJECT_LINK_LIBS libbasics.a )
 file(GLOB SOURCES "src/*.cpp")
 
 add_library(basics STATIC ${SOURCES})
-add_executable(PKDate.test ${SOURCES})
 
+add_executable(PKDate.test test/src/PKDate.test.cpp)
+target_link_libraries(PKDate.test basics)
