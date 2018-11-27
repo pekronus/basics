@@ -1,0 +1,10 @@
+(defun up-slightly() (interactive) (scroll-up 3))
+(global-set-key [mouse-5] 'up-slightly)
+(defun dn-slightly() (interactive) (scroll-down 3))
+(global-set-key [mouse-4] 'dn-slightly)
+
+
+;; when selected, typing anything replaces the selection
+(delete-selection-mode 1)
+;; C++
+(c-set-offset 'substatement-open 0)
