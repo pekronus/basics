@@ -1,6 +1,6 @@
-#include <PKDate.hpp>
+#include <base/PKDate.hpp>
 
-//using namespace pekronus;
+using namespace pekronus;
 
 PKDate::DMYType PKDate::_days_in_month[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 PKDate::DMYType PKDate::_days_before_month[] = {0, 31, 59, 90, 120, 151, 181, 212, 243, 272, 304, 334};
@@ -109,7 +109,7 @@ PKDate::add_years(int years)
 }
 
 std::ostream&
-operator<<(std::ostream& os, const PKDate& date)
+pekronus::operator<<(std::ostream& os, const PKDate& date)
 {
     os << date.month() << "/" << date.day() << "/" << date.year();
     return os;

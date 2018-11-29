@@ -1,15 +1,17 @@
 cmake_minimum_required(VERSION 2.8.9)
-project(basics)
+project(base)
+set(DEV_ROOT $ENV{HOME}/dev)
+message("dev root is ${DEV_ROOT}")
 set(CMAKE_BUILD_TYPE Debug)
-#Bring the headers, such as Student.h into the project
-include_directories(include)
+#Bring the headers into the project
+include_directories("${DEV_ROOT}/basics/include")
 
-set ( PROJECT_LINK_LIBS libbasics.a )
+set ( PROJECT_LINK_LIBS libbase.a )
 
 #However, the file(GLOB...) allows for wildcard additions:
-file(GLOB SOURCES "src/*.cpp")
+file(GLOB SOURCES "${DEV_ROOT}/basics/src/base/*.cpp")
 
-add_library(basics STATIC ${SOURCES})
+add_library(base STATIC ${SOURCES})
 
-add_executable(PKDate.test test/src/PKDate.test.cpp)
-target_link_libraries(PKDate.test basics)
+add_executable(PKDate.test "${DEV_ROOT}/basics/src/base/test/PKDate.test.cpp")
+target_link_libraries(PKDate.test base)

@@ -1,7 +1,7 @@
-#include <PKDate.hpp>
+#include <base/PKDate.hpp>
 #include <iostream>
 
-//using namespace pekronus;
+using namespace pekronus;
 int
 main(int argc, char** argv)
 {
