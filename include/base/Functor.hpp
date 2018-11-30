@@ -12,9 +12,9 @@ namespace pekronus
         virtual T operator()(const T& x) const
           {return f(x);}
         //! evaluate at x
-        virtual T f(const T& x) const = 0;
+        virtual T f(const T x) const = 0;
         //! evaluate derivative at x
-        virtual T dfdx(const T& x) const
+        virtual T dfdx(const T x) const
           {
               static const T dx = 1e-8;
               return (f(x+dx) - f(x))/dx;
@@ -26,7 +26,7 @@ namespace pekronus
     class Functor2D
     {
       public:
-        virtual T operator()(const T& x, const T& y) const = 0;
+        virtual T operator()(const T x, const T y) const = 0;
     };
 }
 #endif
