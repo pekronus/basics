@@ -61,7 +61,7 @@ namespace pekronus
         //! default ctor
         NNetFeedForward();
         //! propagate forward
-        const std::vector<NNetFeedForwardGeometry<DType>::Node>&  propagate_forward(const std:vector<T>& inputs);
+        const std::vector<typename NNetFeedForwardGeometry<DType>::Node>& propagate_forward(const std::vector<DType>& inputs);
         //! calculate derivatives wrt to weights
         void back_propagate(
             std::vector< std::vector< std::vector<DType> > >& partials) const;
