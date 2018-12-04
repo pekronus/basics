@@ -34,7 +34,7 @@ namespace pekronus
         };
 
         //! add a layer
-        void add_layer(const int nnodes, const ActivationFunc<DType>* af);
+        virtual void add_layer(const int nnodes, const ActivationFunc<DType>* af);
 
         // get number of layers
         int number_of_layers() const
@@ -62,6 +62,8 @@ namespace pekronus
       public:
         //! default ctor
         NNetFeedForward();
+        //! add a layer
+         void add_layer(const int nnodes, const ActivationFunc<DType>* af) override;
         //! propagate forward
         const std::vector<typename NNetFeedForwardGeometry<DType>::Node>& propagate_forward(const std::vector<DType>& inputs);
         //! calculate derivatives wrt to weights
@@ -74,8 +76,6 @@ namespace pekronus
         void incr_weights(
             const std::vector< std::vector< std::vector<DType> > >& increments);
       protected:
-
-        
         //! weights (layer/ node-to / node-from) 
         std::vector< std::vector< std::vector<DType> > > _weights;
     };
@@ -97,11 +97,37 @@ namespace pekronus
         _layers.push_back(l);
     }
 
-
+    //! add a layer
+    template <class DType>
+    void
+    NNetFeedForward<DType>::add_layer(const int nnodes,
+                                      const ActivationFunc<DType>* af)
+    {
+        NNetFeedForwardGeometry<DType>::add_layer(nnodes, af);
+        // add weights matrix if more than one layer
+        auto lsz = _layers.size();
+        if (lsz > 1)
+        {
+            
+            std::vector< std::vector<DType> > wm;
+            wm.resize(nnodes);
+            for (int i = 0; i < nnodes; ++i)
+                wm[i].assign(_layers[lsz-2]._nodes.size(), 0.0);
+        }
+        _weignts.push_back(wm);
+    
+    }
+    
+    //! ctor
     template <class DType>
     NNetFeedForward<DType>::NNetFeedForward()
         : NNetFeedForwardGeometry<DType>()
-    {}
+    {
+    }
+
+    
+    
+    
 };
 
 #endif
