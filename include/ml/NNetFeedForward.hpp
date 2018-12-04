@@ -2,7 +2,9 @@
 #define __NNetFeedForward_H__
 
 #include <vector>
+#include <memory>
 #include <ml/ActivationFunc.hpp>
+
 
 
 namespace pekronus
@@ -27,12 +29,12 @@ namespace pekronus
         //! represents a single layer
         struct Layer
         {
-            ActivationFunc<DType>& _afunc;
+            std::unique_ptr<ActivationFunc<DType> > _afunc;
             std::vector<Node> _nodes;
         };
 
         //! add a layer
-        void add_layer(const int nnodes);
+        void add_layer(const int nnodes, const ActivationFunc<DType>* af);
 
         // get number of layers
         int number_of_layers() const
@@ -77,7 +79,29 @@ namespace pekronus
         //! weights (layer/ node-to / node-from) 
         std::vector< std::vector< std::vector<DType> > > _weights;
     };
-};
 
+    //! ctor
+    template <class DType>
+    NNetFeedForwardGeometry<DType>::NNetFeedForwardGeometry()
+    {}
+
+    //! add a layer
+    template <class DType>
+    void
+    NNetFeedForwardGeometry<DType>::add_layer(const int nnodes,
+                                              const ActivationFunc<DType>* af)
+    {
+        Layer l;
+        l._nodes.resize(nnodes);
+        l._afunc.reset(af);
+        _layers.push_back(l);
+    }
+
+
+    template <class DType>
+    NNetFeedForward<DType>::NNetFeedForward()
+        : NNetFeedForwardGeometry<DType>()
+    {}
+};
 
 #endif
