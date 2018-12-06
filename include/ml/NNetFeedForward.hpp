@@ -127,9 +127,18 @@ namespace pekronus
             throw std::exception("No layers");
 
         auto nnodes = _layers[0]._out_vals.size();
-        // for (int 
+        if (nnodes != inputs.size())
+            throw std::exception("Inputs size mismatch");
+
+        // set initial values
+        _layers[0]._out_vals.assign(inputs.begin(), inputs.end());
+        for (auto l = 0; l <= nlayers-2; ++l)
+        {
+            
+        }
+
         
-        return _layers.back._out_vals;        
+        return _layers.back()._out_vals;        
     }
 
     

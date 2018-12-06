@@ -15,3 +15,5 @@ add_library(base STATIC ${SOURCES})
 
 add_executable(PKDate.test "${DEV_ROOT}/basics/src/base/test/PKDate.test.cpp")
 target_link_libraries(PKDate.test base)
+add_executable(Matrix.test "${DEV_ROOT}/basics/src/base/test/Matrix.test.cpp")
+target_link_libraries(Matrix.test base)
