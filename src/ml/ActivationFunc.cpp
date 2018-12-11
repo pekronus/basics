@@ -10,5 +10,7 @@ ActivationFunc<T>::create(const ActivationFunc::FuncType ft)
     {
       case FuncType::SigmoidAF:
         return new SigmoidAF<T>();
+      default:
+        return nullptr;
     }
 }

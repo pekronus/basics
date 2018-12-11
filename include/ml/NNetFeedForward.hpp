@@ -15,8 +15,9 @@ namespace pekronus
     class NNetFeedForward
     {
       public:
-        //! default ctor
-        NNetFeedForward();;
+        //!  ctor
+        NNetFeedForward(const std::vector<unsigned int> nodes_per_layer,
+                        typename ActivationFunc<DType>::FuncType aft);
         
         // represents a network node
         // struct Node
@@ -65,55 +66,51 @@ namespace pekronus
         DType value(const int i, const int l) const
           {return _layers[l]._out_vals[i];}
 
-        //! add a layer
-        void add_layer(const int nnodes, const ActivationFunc<DType>* af) override;
         //! propagate forward
         const std::vector<DType>& propagate_forward(const std::vector<DType>& inputs);
         //! calculate derivatives wrt to weights
         void back_propagate(
-            std::vector< std::vector< std::vector<DType> > >& partials) const;
+            std::vector< Matrix<DType> >& partials) const;
         //! set weights
         void set_weights(
-            const std::vector< std::vector< std::vector<DType> > >& weights);
+            const std::vector< Matrix<DType> >& weights);
         //! increment weights
         void incr_weights(
-            const std::vector< std::vector< std::vector<DType> > >& increments);
+            const std::vector< Matrix<DType> >& increments);
       protected:
         //! layers
         std::vector<Layer> _layers;
         //! weights (layer/ node-to / node-from (last one is the bias)) 
-        std::vector< std::vector< std::vector<DType> > > _weights;
+        std::vector< Matrix<DType> > _weights;
     };
 
-    //! add a layer
-    template <class DType>
-    void
-    NNetFeedForward<DType>::add_layer(const int nnodes,
-                                      const ActivationFunc<DType>* af)
-    {
-        Layer l;
-        l.resize(nnodes);
-        l._afunc.reset(af);
-        _layers.push_back(l);
-        
-        // add weights matrix if more than one layer
-        auto lsz = _layers.size();
-        if (lsz <= 1)
-            return;
-        
-        std::vector< std::vector<DType> > wm;
-        wm.resize(nnodes);
-        for (int i = 0; i < nnodes; ++i)
-            wm[i].assign(_layers[lsz-2]._out_vals.size() + 1, 0.0);
-        
-        _weights.push_back(wm);
-    
-    }
     
     //! ctor
     template <class DType>
-    NNetFeedForward<DType>::NNetFeedForward()
+    NNetFeedForward<DType>::NNetFeedForward(const std::vector<unsigned int> nodes_per_layer,
+                                            typename ActivationFunc<DType>::FuncType aft)
     {
+        auto nlayers = nodes_per_layer.size();
+        if (nlayers == 0)
+            return;
+        // add all layers but the last one
+        for (auto i = 0; i < nlayers-1; ++i)
+        {
+            Layer l;
+            l.resize(nodes_per_layer[i]);
+            l._afunc.reset(ActivationFunc<DType>::create(aft));
+            _layers.push_back(l);
+
+            const unsigned int wrows = nodes_per_layer[i+1];
+            const unsigned int wcols = nodes_per_layer[i] + 1; // +1 is from const term
+            Matrix<DType> wm(wrows, wcols);
+            _weights.push_back(wm);
+        }
+        // for the last layer, just add the nodes
+        Layer l;
+        l.resize(nodes_per_layer.back());
+        l._afunc.reset(ActivationFunc<DType>::create(aft));
+        _layers.push_back(l);
     }
 
     //! propagate inputs forward
@@ -134,7 +131,7 @@ namespace pekronus
         _layers[0]._out_vals.assign(inputs.begin(), inputs.end());
         for (auto l = 0; l <= nlayers-2; ++l)
         {
-            
+            //            _layers[l+1]._in_
         }
 
         
