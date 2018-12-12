@@ -13,4 +13,6 @@ file(GLOB SOURCES "${DEV_ROOT}/basics/src/${LIBNAME}/*.cpp")
 
 add_library(${LIBNAME} STATIC ${SOURCES})
 
+add_executable(NNetFeedForward.test "${DEV_ROOT}/basics/src/ml/test/NNetFeedForward.test.cpp")
+target_link_libraries(NNetFeedForward.test base ml)
 

@@ -18,11 +18,46 @@ namespace pekronus
         Matrix();
         //! ctor with dimensions and initializer
         Matrix(const size_t i, const size_t j, const T v = 0.0);
+        //! copy ctor
+        Matrix(const Matrix<T>& rhs)
+            : _rows(rhs._rows),
+              _cols(rhs._cols),
+              _data(new T[rhs._rows*rhs._cols])
+          {
+              memcpy(_data.get(), rhs._data.get(), _rows*_cols*sizeof(T));
+          }
+        Matrix<T>& operator=(const Matrix<T>& rhs)
+          {
+              if (this == &rhs)
+                  return *this;
+              _rows = rhs._rows;
+              _cols = rhs._cols;
+              _data.reset(new T[rhs._rows*rhs._cols]);
+              // copy the data
+              memcpy(_data.get(), rhs._data.get(), _rows*_cols*sizeof(T));
+              return *this;
+          }
         //! resize
         void resize(const size_t i, const size_t j, const T v = 0.0);
         //! get reference to value
         T& operator()(const int i, const int j)
           {return _data[i*_cols + j];}
+        //! get reference to value
+        T& get(const int i, const int j)
+          {return (*this)(i,j);}
+        //! get const reference to value
+        const T& get(const int i, const int j) const
+          {return (*this)(i,j);}
+        Matrix<T>& operator+=(const Matrix<T>& rhs)
+          {
+              if (rhs._cols != cols() || rhs._rows != rows)
+                  throw std::runtime_error("Sizes do not match");
+              const auto sz = cols()*rows();
+              for (auto i = 0; i < sz; ++i)
+              {
+                  _data[i] += rhs._data[i];
+              }
+          }
         //! const version of get element
         const T& operator()(const int i, const int j) const
           {return _data[i*_cols + j];}

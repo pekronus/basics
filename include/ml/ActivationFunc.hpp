@@ -6,21 +6,23 @@
 
 namespace pekronus
 {
+    enum class ActivationFuncType
+        {
+            Sigmoid
+        };
     template <class T>
     class ActivationFunc
     {
       public:
-        enum class FuncType
-            {
-                Sigmoid
-            };
+        
         //! calculate the function value
         virtual T f(const T x) const = 0;
         //! derivative.  also calculates the function value
         virtual T dfdx(const T x, T& fval) const = 0;
         //! create a functor object based on type
-        static ActivationFunc<T>* create(const FuncType ft);
-        
+        static ActivationFunc<T>* create(const ActivationFuncType ft);
+        //! clone
+        virtual ActivationFunc<T>* clone() const = 0;
     };
 
     template <class T>
@@ -36,8 +38,26 @@ namespace pekronus
               fval = f(x);
               return fval*(1-fval);
           }
+       
+        //! clone
+        virtual ActivationFunc<T>* clone() const
+          {
+              return new SigmoidAF();
+          }
     };
 
+    template<class T>
+    ActivationFunc<T>*
+    ActivationFunc<T>::create(const ActivationFuncType ft)
+    {
+        switch (ft)
+        {
+          case ActivationFuncType::Sigmoid:
+            return new SigmoidAF<T>();
+          default:
+            return nullptr;
+        }
+    }
 }
 
 #endif
